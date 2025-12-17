@@ -60,3 +60,27 @@ Usuario* busca_usuario(Usuario* lista, char* login){
     }
     return NULL;
 }
+
+int remover_usuario(Usuario** primeiro, char* login){
+    if(primeiro == NULL || *primeiro == NULL || login == NULL || strlen(login) == 0 ){
+        return 0;
+    }
+    Usuario* p = *primeiro;
+    Usuario* anterior = NULL;
+    while(p!=NULL){
+        if(strcmp(p->login, login) == 0){
+            if(anterior == NULL){
+                *primeiro = p->prox;
+            }else { 
+                anterior->prox  = p->prox;
+            }
+            free(p->login);
+            free(p->senha);
+            free(p);
+            return 1;
+        }
+        anterior = p;
+        p = p->prox;
+    }
+    return 0;
+}  
