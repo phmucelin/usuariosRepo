@@ -50,5 +50,13 @@ int cadastrar_usuario(Usuario** primeiro, char* login, char* senha){
 }
 
 Usuario* busca_usuario(Usuario* lista, char* login){
-    
+    if(lista == NULL || login == NULL) return NULL;
+    Usuario* p = lista;
+    while(p != NULL){
+        if(strcmp(p->login, login) == 0){
+            return p;
+}
+        p = p->prox;
+    }
+    return NULL;
 }
