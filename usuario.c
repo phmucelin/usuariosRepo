@@ -83,4 +83,33 @@ int remover_usuario(Usuario** primeiro, char* login){
         p = p->prox;
     }
     return 0;
-}  
+}
+
+int login_usuario(Usuario* primeiro, char* login, char* senha){
+    
+    if(primeiro == NULL || login == NULL || strlen(login) == 0 || senha == NULL || strlen(senha) == 0){
+        return 0;
+    }
+
+    Usuario* destV = busca_usuario(primeiro, login);
+    if(destV == NULL){
+        return 0;
+    }else{
+        if(strcmp(destV->senha, senha) == 0){
+            return 1;
+        }
+    }
+    return 0;
+}
+
+
+void listar_usuarios(Usuario* lista){
+    if(lista == NULL){
+        return;
+    }
+    int i = 1;
+    for(Usuario* p = lista; p != NULL; p = p->prox){
+        printf("User %d: %s\n", i, p->login);
+        i++;
+    }
+}
