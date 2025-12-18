@@ -25,6 +25,7 @@ Usuario* cria_usuario(char* login, char* senha){
         strcpy(u->login, login);
         strcpy(u->senha, senha);
         u->tentativas = 0;
+        u->status = USUARIO_ATIVO;
         u->prox = NULL;
         return u;
     }
@@ -62,6 +63,7 @@ int cadastrar_usuario(Usuario** primeiro, char* login, char* senha){
     strcpy(u->login, login);
     strcpy(u->senha, senha);
 
+    u->status = USUARIO_ATIVO;
     u->tentativas = 0;
     u->prox = *primeiro;
     *primeiro = u;
@@ -72,7 +74,7 @@ Usuario* busca_usuario(Usuario* lista, char* login){
     if(lista == NULL || login == NULL) return NULL;
     Usuario* p = lista;
     while(p != NULL){
-        if(strcmp(p->login, login) == 0){
+        if(strcmp(p->login, login) == 0 && p->status == USUARIO_ATIVO){
             return p;
 }
         p = p->prox;
@@ -80,7 +82,7 @@ Usuario* busca_usuario(Usuario* lista, char* login){
     return NULL;
 }
 
-int remover_usuario(Usuario** primeiro, char* login){
+int remover_total_sistema_usuario(Usuario** primeiro, char* login){
     if(primeiro == NULL || *primeiro == NULL || login == NULL || strlen(login) == 0 ){
         return 0;
     }
@@ -104,6 +106,27 @@ int remover_usuario(Usuario** primeiro, char* login){
     return 0;
 }
 
+int remove_usuario_parcial(Usuario* lista, char* login){
+    if(lista == NULL || login == NULL || strlen(login) == 0) {
+        return 0;
+    }
+    Usuario* dest = busca_usuario(lista, login);
+    if(dest == NULL) return 0;
+    dest->status = USUARIO_EXCLUIDO;
+    return 1;
+}
+
+int bloqueia_usuario(Usuario* lista, char* login){
+    if(lista == NULL || login == NULL || strlen(login) == 0) 
+        {
+            return 0;
+        }
+    Usuario* dest = busca_usuario(lista, login);
+    if(dest == NULL) return 0;
+    dest->status = USUARIO_BLOQUEADO;
+    return 1;
+}
+
 int login_usuario(Usuario* primeiro, char* login, char* senha){
     
     if(primeiro == NULL || login == NULL || strlen(login) == 0 || senha == NULL || strlen(senha) == 0){
@@ -114,7 +137,7 @@ int login_usuario(Usuario* primeiro, char* login, char* senha){
     if(destV == NULL){
         return 0;
     }else{
-        if(strcmp(destV->senha, senha) == 0){
+        if(strcmp(destV->senha, senha) == 0 && destV->status == USUARIO_ATIVO){
             return 1;
         }
     }
