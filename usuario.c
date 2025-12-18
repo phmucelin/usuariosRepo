@@ -3,16 +3,32 @@
 #include <string.h>
 #include <stdio.h>
 
+typedef enum {
+    USUARIO_ATIVO, // 0
+    USUARIO_BLOQUEADO, // 1
+    USUARIO_EXCLUIDO // 2
+} StatusUsuario;
+
+typedef struct Usuario{
+    char* login;
+    char* senha;
+    int tentativas;
+    StatusUsuario status;
+    Usuario* prox;
+} Usuario;
 
 Usuario* cria_usuario(char* login, char* senha){
-    Usuario *u = (Usuario*)malloc(sizeof(Usuario));
-    u->login = malloc(strlen(login) + 1);
-    u->senha = malloc(strlen(senha) + 1);
-    strcpy(u->login, login);
-    strcpy(u->senha, senha);
-    u->tentativas = 0;
-    u->prox = NULL;
-    return u;
+    if(busca_usuario(login, senha) == NULL){
+        Usuario *u = (Usuario*)malloc(sizeof(Usuario));
+        u->login = malloc(strlen(login) + 1);
+        u->senha = malloc(strlen(senha) + 1);
+        strcpy(u->login, login);
+        strcpy(u->senha, senha);
+        u->tentativas = 0;
+        u->prox = NULL;
+        return u;
+    }
+    return NULL;
 }
 
 void libera_usuario(Usuario* lista){
@@ -115,4 +131,22 @@ void listar_usuarios(Usuario* lista){
         printf("User %d: %s\n", i, p->login);
         i++;
     }
+}
+
+int verifica_status(Usuario* lista, char* login){
+    if(lista == NULL || login == NULL || strlen(login) == 0) return 0;
+    Usuario* destino = busca_usuarios(lista, login);
+    if(destino == NULL) return 0;
+    if(destino->status == USUARIO_ATIVO){
+
+        return 1;
+    }else if(destino->status == USUARIO_BLOQUEADO){
+
+        return 0;
+    }else{
+
+        return 0;
+    }
+
+    return 0;
 }
