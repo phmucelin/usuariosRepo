@@ -74,7 +74,7 @@ Usuario* busca_usuario(Usuario* lista, char* login){
     if(lista == NULL || login == NULL) return NULL;
     Usuario* p = lista;
     while(p != NULL){
-        if(strcmp(p->login, login) == 0 && p->status == USUARIO_ATIVO){
+        if(strcmp(p->login, login) == 0){
             return p;
 }
         p = p->prox;
@@ -144,7 +144,6 @@ int login_usuario(Usuario* primeiro, char* login, char* senha){
     return 0;
 }
 
-
 void listar_usuarios(Usuario* lista){
     if(lista == NULL){
         return;
@@ -160,16 +159,14 @@ int verifica_status(Usuario* lista, char* login){
     if(lista == NULL || login == NULL || strlen(login) == 0) return 0;
     Usuario* destino = busca_usuarios(lista, login);
     if(destino == NULL) return 0;
-    if(destino->status == USUARIO_ATIVO){
-
-        return 1;
-    }else if(destino->status == USUARIO_BLOQUEADO){
-
-        return 0;
-    }else{
-
-        return 0;
-    }
+    if(destino->status == USUARIO_ATIVO)
+        {
+           return 1;
+        }
+        else
+            {
+                return 0;
+            }
 
     return 0;
 }
