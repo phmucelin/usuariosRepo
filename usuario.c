@@ -1,10 +1,13 @@
 #include "usuario.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 
 Usuario* cria_usuario(char* login, char* senha){
     Usuario *u = (Usuario*)malloc(sizeof(Usuario));
+    u->login = malloc(strlen(login) + 1);
+    u->senha = malloc(strlen(senha) + 1);
     strcpy(u->login, login);
     strcpy(u->senha, senha);
     u->tentativas = 0;
@@ -26,7 +29,7 @@ void libera_usuario(Usuario* lista){
 int cadastrar_usuario(Usuario** primeiro, char* login, char* senha){
     if (login == NULL || senha == NULL) return 0;
     if (strlen(login) == 0 || strlen(senha) == 0) return 0;
-    if (buscar_usuario(*primeiro, login) != NULL) 
+    if (busca_usuario(*primeiro, login) != NULL) 
     {
         return 0;
     }
