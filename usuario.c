@@ -110,6 +110,7 @@ int remover_total_sistema_usuario(Usuario** primeiro, char* login){
         return 0;
     }
     /*Vou chamar a function de busca aqui dentro, mas acredito que poderia otimizar esse while com ela..*/
+    
     /*nao permito apagar admin*/
     Usuario* destino = busca_usuario((*primeiro), login);
     if(destino->role == ADMIN) return 0;
@@ -149,6 +150,7 @@ int bloqueia_usuario(Usuario* lista, char* login){
             return 0;
         }
     Usuario* dest = busca_usuario(lista, login);
+    if(dest->role == ADMIN || dest->status == USUARIO_BLOQUEADO || dest->status == USUARIO_EXCLUIDO) return 0;
     if(dest == NULL) return 0;
     dest->status = USUARIO_BLOQUEADO;
     return 1;
