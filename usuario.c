@@ -233,4 +233,28 @@ int altera_senha_usuario(Usuario* primeiro, char* login, char* senha, char* nova
     return 1;
 }
 
+int promove_usuario_para_admin(Usuario* lista, char* login){
+    if(primeiro == NULL || login == NULL || strlen(login) == 0) return 0;
+    Usuario* destino = busca_usuario(lista, login);
+    if(destino == NULL || destino->status != USUARIO_ATIVO || destino->role == ADMIN) return 0;
+    destino->role = ADMIN;
+    return 1;
+}
 
+int conta_usuarios_ativos(Usuario* lista){
+    if(lista == NULL) return 0;
+    int total = 0;
+    for(Usuario* p = lista; p!= NULL; p = p->prox){
+        if(p->status == USUARIO_ATIVO) total++;;
+    }
+    return total;
+}
+
+int listar_user_por_role(Usuario* lista, Role role){
+    if(lista == NULL || role == NULL) return 0;
+        for(Usuario* p = lista; p != NULL; p = p->prox){
+            if(p->role == role && p->status == USUARIO_ATIVO){
+                printf("%s\n", p->login);
+            }
+        }
+}
