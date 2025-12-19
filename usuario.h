@@ -17,4 +17,6 @@ int valida_user_admin(Usuario* lista, char* login);
 int desbloqueia_usuario(Usuario* primeiro, char* login);
 int altera_senha_usuario(Usuario* primeiro, char* login, char* senha, char* nova_senha);
 int promove_usuario_para_admin(Usuario* lista, char* login);
+int listar_user_por_role(Usuario* lista, Role role);
+int conta_usuarios_ativos(Usuario* lista);
 #endif
