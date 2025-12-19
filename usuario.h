@@ -14,4 +14,6 @@ int login_usuario(Usuario* lista, char* login, char* senha);
 void listar_usuarios(Usuario* lista);
 int verifica_status(Usuario* lista, char* login);
 int valida_user_admin(Usuario* lista, char* login);
+int desbloqueia_usuario(Usuario* primeiro, char* login);
+int altera_senha_usuario(Usuario* primeiro, char* login, char* senha, char* nova_senha);
 #endif

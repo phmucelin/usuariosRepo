@@ -214,3 +214,23 @@ int valida_user_admin(Usuario* lista, char* login){
     else return 0;
     return 0;
 }
+
+int desbloqueia_usuario(Usuario* primeiro, char* login){
+    if(primeiro == NULL || login == NULL || strlen(login) == 0) return 0;
+    Usuario* destino = busca_usuario(primeiro, login);
+    if(destino == NULL || destino->status != USUARIO_BLOQUEADO || destino->role == ADMIN) return 0;
+    destino->status = USUARIO_ATIVO;
+    return 1;
+}
+
+int altera_senha_usuario(Usuario* primeiro, char* login, char* senha, char* nova_senha){
+    if(primeiro == NULL || login == NULL || senha == NULL || nova_senha == NULL || strlen(login) == 0 || strlen(senha) == 0 || strlen(nova_senha) == 0) return 0;
+    Usuario* destino = busca_usuario(primeiro, login);
+    if(destino == NULL || destino->role == ADMIN || strcmp(destino->senha, senha) != 0 || destino->status != USUARIO_BLOQUEADO || destino->status != USUARIO_EXCLUIDO) return 0;
+    free(destino->senha);
+    destino->senha = malloc(strlen(nova_senha) + 1);
+    strcpy(destino->senha, nova_senha);
+    return 1;
+}
+
+
