@@ -9,27 +9,50 @@ typedef enum {
     USUARIO_EXCLUIDO // 2
 } StatusUsuario;
 
+typedef enum {
+    USER_COMUM,
+    ADMIN
+} Role;
+
 typedef struct Usuario{
     char* login;
     char* senha;
     int tentativas;
     StatusUsuario status;
+    Role role;
     Usuario* prox;
 } Usuario;
 
+#define MAX_TENTATIVAS 3
+
 Usuario* cria_usuario(char* login, char* senha){
-    if(busca_usuario(login, senha) == NULL){
-        Usuario *u = (Usuario*)malloc(sizeof(Usuario));
-        u->login = malloc(strlen(login) + 1);
-        u->senha = malloc(strlen(senha) + 1);
-        strcpy(u->login, login);
-        strcpy(u->senha, senha);
-        u->tentativas = 0;
-        u->status = USUARIO_ATIVO;
-        u->prox = NULL;
-        return u;
-    }
-    return NULL;
+
+    Usuario *u = (Usuario*)malloc(sizeof(Usuario));
+    u->login = malloc(strlen(login) + 1);
+    u->senha = malloc(strlen(senha) + 1);
+    strcpy(u->login, login);
+    strcpy(u->senha, senha);
+    u->tentativas = 0;
+    u->status = USUARIO_ATIVO;
+    u->role = USER_COMUM;
+    u->prox = NULL;
+    return u;
+
+}
+
+Usuario* cria_admin(char* login, char* senha){
+
+    Usuario *u = (Usuario*)malloc(sizeof(Usuario));
+    u->login = malloc(strlen(login) + 1);
+    u->senha = malloc(strlen(senha) + 1);
+    strcpy(u->login, login);
+    strcpy(u->senha, senha);
+    u->tentativas = 0;
+    u->status = USUARIO_ATIVO;
+    u->role = ADMIN;
+    u->prox = NULL;
+    return u;
+
 }
 
 void libera_usuario(Usuario* lista){
@@ -86,6 +109,10 @@ int remover_total_sistema_usuario(Usuario** primeiro, char* login){
     if(primeiro == NULL || *primeiro == NULL || login == NULL || strlen(login) == 0 ){
         return 0;
     }
+    /*Vou chamar a function de busca aqui dentro, mas acredito que poderia otimizar esse while com ela..*/
+    /*nao permito apagar admin*/
+    Usuario* destino = busca_usuario((*primeiro), login);
+    if(destino->role == ADMIN) return 0;
     Usuario* p = *primeiro;
     Usuario* anterior = NULL;
     while(p!=NULL){
@@ -139,6 +166,11 @@ int login_usuario(Usuario* primeiro, char* login, char* senha){
     }else{
         if(strcmp(destV->senha, senha) == 0 && destV->status == USUARIO_ATIVO){
             return 1;
+        }else{
+            if(destV->tentativas < MAX_TENTATIVAS) destV->tentativas++;
+            else{
+                destV->status = USUARIO_BLOQUEADO;
+            }
         }
     }
     return 0;
@@ -157,7 +189,7 @@ void listar_usuarios(Usuario* lista){
 
 int verifica_status(Usuario* lista, char* login){
     if(lista == NULL || login == NULL || strlen(login) == 0) return 0;
-    Usuario* destino = busca_usuarios(lista, login);
+    Usuario* destino = busca_usuario(lista, login);
     if(destino == NULL) return 0;
     if(destino->status == USUARIO_ATIVO)
         {
@@ -168,5 +200,15 @@ int verifica_status(Usuario* lista, char* login){
                 return 0;
             }
 
+    return 0;
+}
+
+/*Sempre antes de chamar funcoes de manipulacao de usuarios, necessario chamar essa para validar a role*/
+int valida_user_admin(Usuario* lista, char* login){
+    if(lista == NULL || login == NULL || strlen(login) == 0) return 0;
+    Usuario* verifica = busca(lista, login);
+    if(verifica == NULL) return 0;
+    if(verifica->role == ADMIN) return 1;
+    else return 0;
     return 0;
 }

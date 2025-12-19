@@ -29,5 +29,6 @@
     },
     "editor.inlineSuggest.enabled": false,
     "editor.suggestOnTriggerCharacters": false
-  }
+  },
+  "C_Cpp.errorSquiggles": "disabled"
 }
