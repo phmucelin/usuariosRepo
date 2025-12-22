@@ -249,7 +249,6 @@ int conta_usuarios_ativos(Usuario* lista){
     }
     return total;
 }
-
 int listar_user_por_role(Usuario* lista, Role role){
     if(lista == NULL || role == NULL) return 0;
         for(Usuario* p = lista; p != NULL; p = p->prox){
