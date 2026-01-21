@@ -3,17 +3,6 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef enum {
-    USUARIO_ATIVO, // 0
-    USUARIO_BLOQUEADO, // 1
-    USUARIO_EXCLUIDO // 2
-} StatusUsuario;
-
-typedef enum {
-    USER_COMUM,
-    ADMIN
-} Role;
-
 typedef struct Usuario{
     char* login;
     char* senha;
@@ -208,7 +197,7 @@ int verifica_status(Usuario* lista, char* login){
 /*Sempre antes de chamar funcoes de manipulacao de usuarios, necessario chamar essa para validar a role*/
 int valida_user_admin(Usuario* lista, char* login){
     if(lista == NULL || login == NULL || strlen(login) == 0) return 0;
-    Usuario* verifica = busca(lista, login);
+    Usuario* verifica = busca_usuario(lista, login);
     if(verifica == NULL) return 0;
     if(verifica->role == ADMIN) return 1;
     else return 0;
@@ -226,7 +215,7 @@ int desbloqueia_usuario(Usuario* primeiro, char* login){
 int altera_senha_usuario(Usuario* primeiro, char* login, char* senha, char* nova_senha){
     if(primeiro == NULL || login == NULL || senha == NULL || nova_senha == NULL || strlen(login) == 0 || strlen(senha) == 0 || strlen(nova_senha) == 0) return 0;
     Usuario* destino = busca_usuario(primeiro, login);
-    if(destino == NULL || destino->role == ADMIN || strcmp(destino->senha, senha) != 0 || destino->status != USUARIO_BLOQUEADO || destino->status != USUARIO_EXCLUIDO) return 0;
+    if(destino == NULL || strcmp(destino->senha, senha) != 0 || destino->status == USUARIO_BLOQUEADO || destino->status == USUARIO_EXCLUIDO) return 0;
     free(destino->senha);
     destino->senha = malloc(strlen(nova_senha) + 1);
     strcpy(destino->senha, nova_senha);
@@ -234,7 +223,7 @@ int altera_senha_usuario(Usuario* primeiro, char* login, char* senha, char* nova
 }
 
 int promove_usuario_para_admin(Usuario* lista, char* login){
-    if(primeiro == NULL || login == NULL || strlen(login) == 0) return 0;
+    if(lista == NULL || login == NULL || strlen(login) == 0) return 0;
     Usuario* destino = busca_usuario(lista, login);
     if(destino == NULL || destino->status != USUARIO_ATIVO || destino->role == ADMIN) return 0;
     destino->role = ADMIN;
@@ -249,11 +238,13 @@ int conta_usuarios_ativos(Usuario* lista){
     }
     return total;
 }
+
 int listar_user_por_role(Usuario* lista, Role role){
-    if(lista == NULL || role == NULL) return 0;
+    if(lista == NULL) return 0;
         for(Usuario* p = lista; p != NULL; p = p->prox){
             if(p->role == role && p->status == USUARIO_ATIVO){
                 printf("%s\n", p->login);
             }
         }
+    return 1;
 }

@@ -1,6 +1,17 @@
 #ifndef USUARIO_H
 #define USUARIO_H
 
+typedef enum {
+    USUARIO_ATIVO, // 0
+    USUARIO_BLOQUEADO, // 1
+    USUARIO_EXCLUIDO // 2
+} StatusUsuario;
+
+typedef enum {
+    USER_COMUM,
+    ADMIN
+} Role;
+
 typedef struct Usuario Usuario; 
 
 Usuario* cria_usuario(char* login, char* senha);
